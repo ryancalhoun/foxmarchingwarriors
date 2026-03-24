@@ -1,12 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from './views/Home.vue'
+import PageContent from '@/components/PageContent'
 
 const routes = [
   {
+    path: '/:page',
+    name: 'page',
+    component: PageContent,
+  },
+  {
     path: '/:pathMatch(.*)*',
-    component: Home,
-  }
+    redirect: { name: 'page', params: { page: 'home' } },
+  },
 ]
 
 const router = createRouter({

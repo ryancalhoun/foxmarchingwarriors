@@ -7,8 +7,8 @@ db = firestore.Client(project='foxmarchingwarriors')
 
 @app.route('/pages')
 def sample():
-  pages = [doc.to_dict()['name'] for doc in db.collection('pages').get()]
-  return jsonify({"hello": pages})
+  pages = [doc.to_dict() for doc in db.collection('pages').get()]
+  return jsonify({"pages": pages})
 
 @app.route('/health')
 def health():
