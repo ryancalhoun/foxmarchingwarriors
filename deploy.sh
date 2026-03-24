@@ -12,4 +12,5 @@ gcloud storage cp -R web/dist $BUCKET/web/
 gcloud compute \
   instance-groups managed \
   rolling-action replace web-group \
+  --max-unavailable 0 \
   --region us-central1 --project foxmarchingwarriors

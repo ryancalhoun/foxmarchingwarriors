@@ -9,7 +9,7 @@ import { computed } from 'vue'
 const { pages } = defineProps(['pages']);
 const orderedPages = computed(() => {
   if(pages) {
-    return pages.pages.sort((a,b) => b.order - a.order)
+    return pages.pages.sort((a,b) => a.order - b.order)
   }
 });
 </script>

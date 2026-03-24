@@ -1,12 +1,13 @@
 <template>
   <div v-if="page">
-    {{ page.content }}
+    <v-markdown-view :content='page.contents'/>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { VMarkdownView } from 'vue3-markdown'
 
 const { pages } = defineProps(['pages'])
 

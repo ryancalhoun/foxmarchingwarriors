@@ -5,7 +5,7 @@ BUCKET=$(dirname $(
     http://metadata.google.internal/computeMetadata/v1/instance/attributes/startup-script-url)
 )
 
-apt install -y nginx python3.11-venv
+apt install -y build-essential nginx python3-dev python3.11-venv
 
 gcloud storage cp -R $BUCKET/web/api /var/www/
 python3 -m venv /var/www/api/.venv
