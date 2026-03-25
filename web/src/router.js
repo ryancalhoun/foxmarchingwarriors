@@ -10,6 +10,16 @@ const routes = [
     component: UserLogin,
   },
   {
+    path: '/change-password',
+    name: 'change',
+    component: UserLogin,
+  },
+  {
+    path: '/reset-password',
+    name: 'reset',
+    component: UserLogin,
+  },
+  {
     path: '/:page',
     name: 'page',
     component: PageContent,

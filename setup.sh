@@ -4,12 +4,15 @@ BUCKET=$(dirname $(
   curl -H Metadata-Flavor:Google \
     http://metadata.google.internal/computeMetadata/v1/instance/attributes/startup-script-url)
 )
+PROJECT=$(curl -H Metadata-Flavor:Google \
+  http://metadata.google.internal/computeMetadata/v1/project/project-id)
 
-apt install -y build-essential nginx python3-dev python3.11-venv
+apt install -y nginx python3.11-venv
 
 gcloud storage cp -R $BUCKET/web/api /var/www/
 python3 -m venv /var/www/api/.venv
 (cd /var/www/api && .venv/bin/pip install -r requirements.txt)
+gcloud --project $PROJECT secrets versions access 1 --secret jwt-secret > /var/www/api/jwt.key
 
 cat > /etc/systemd/system/www-api.service <<'EOF'
 [Unit]
