@@ -14,7 +14,8 @@ with open('jwt.key') as f:
   jwt_key = f.read()
 
 def str_bytes(f, *args):
-  return f(*(type(arg) == str and arg.encode('utf-8') or arg for arg in args))
+  ret = f(*(type(arg) == str and arg.encode('utf-8') or arg for arg in args))
+  return type(ret) == bytes and ret.decode('utf-8') or ret
 
 @app.route('/pages')
 def get_pages():
@@ -35,11 +36,11 @@ def auth_verify():
 
   if not 'code' in content:
     if not str_bytes(bcrypt.checkpw, content['password'], user_data['password']):
-      raise Forbidden('user not authenticated')
+      raise Forbidden('pw: user not authenticated')
 
   if 'code' in content and 'code' in user_data:
     if content['code'] != user_data['code']:
-      raise Forbidden('user not authenticated')
+      raise Forbidden('code: user not authenticated')
 
   if 'new_password' in content:
     password = str_bytes(bcrypt.hashpw, content['new_password'], bcrypt.gensalt())

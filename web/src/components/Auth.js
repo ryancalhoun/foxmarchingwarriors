@@ -11,6 +11,10 @@ export function useAuth() {
     }
   }
 
+  function logout() {
+    cookies.remove('auth_token');
+  }
+
   async function submit(params) {
     const response = await fetch('api/authenticate', {
       method: 'POST',
@@ -28,5 +32,5 @@ export function useAuth() {
     }
   }
 
-  return { getEmail, submit };
+  return { getEmail, logout, submit };
 }

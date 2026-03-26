@@ -66,9 +66,9 @@ async function handleAuth(params) {
     router.push('/');
   } catch(e) {
     auth_result.value = e.message;
-    password.value == null;
-    new_password.value == null;
-    confirm_password.value == null;
+    password.value == '';
+    new_password.value == '';
+    confirm_password.value == '';
     waiting.value = false;
   }
 }
@@ -80,7 +80,7 @@ async function change() {
   await handleAuth({ email: email.value, password: password.value, new_password: new_password.value });
 }
 async function reset() {
-  await handleAuth({ email: email.value, new_password: password.value, code: code.value });
+  await handleAuth({ email: email.value, new_password: new_password.value, code: code.value });
 }
 </script>
 

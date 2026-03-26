@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import PageContent from '@/components/PageContent'
 import UserLogin from '@/components/UserLogin'
+import UserProfile from '@/components/UserProfile'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/reset-password',
     name: 'reset',
     component: UserLogin,
+  },
+  {
+    path: '/user',
+    name: 'user',
+    component: UserProfile,
   },
   {
     path: '/:page',
