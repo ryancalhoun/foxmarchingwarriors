@@ -10,7 +10,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 
 const { pages } = defineProps(['pages']);
@@ -23,6 +24,11 @@ const orderedPages = computed(() => {
 
 const auth = useAuth();
 const user = ref(auth.getEmail());
+
+const route = useRoute();
+watch(route, (to) => {
+  user.value = auth.getEmail();
+});
 
 </script>
 
