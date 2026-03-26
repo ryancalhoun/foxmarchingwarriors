@@ -41,48 +41,46 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuth } from '@/components/Auth'
 
+const router = useRouter();
 const route = useRoute();
+
+const auth = useAuth();
+
 const { action } = defineProps(['action']);
 
 const waiting = ref(false);
 const code = ref(route.query.code);
-const email = ref(route.query.email);
+const email = ref(route.query.email || auth.getEmail());
 const password = ref();
 const new_password = ref();
 const confirm_password = ref();
 const auth_result = ref();
 
-async function auth(params) {
-  waiting.value = true;
-  const response = await fetch('api/authenticate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams(params),
-  });
-
-  if(response.ok) {
-    return (await response.json()).auth;
-  } else {
+async function handleAuth(params) {
+  try {
+    waiting.value = true;
+    await auth.submit(params);
+    router.push('/');
+  } catch(e) {
+    auth_result.value = e.message;
     password.value == null;
     new_password.value == null;
     confirm_password.value == null;
-    auth_result.value = "Authentication error";
     waiting.value = false;
   }
 }
 
 async function login() {
-  const token = auth({ email: email.value, password: password.value });
+  await handleAuth({ email: email.value, password: password.value });
 }
 async function change() {
-  const token = auth({ email: email.value, password: password.value, new_password: new_password.value });
+  await handleAuth({ email: email.value, password: password.value, new_password: new_password.value });
 }
 async function reset() {
-  const token = auth({ email: email.value, new_password: password.value, code: code.value });
+  await handleAuth({ email: email.value, new_password: password.value, code: code.value });
 }
 </script>
 
