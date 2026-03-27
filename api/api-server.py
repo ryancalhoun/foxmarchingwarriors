@@ -3,51 +3,64 @@ from google.cloud import firestore
 from werkzeug.exceptions import *
 import bcrypt
 import jwt
-import uuid
 import logging
+import os
+import uuid
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 
-db = firestore.Client(project='foxmarchingwarriors')
-with open('jwt.key') as f:
-  jwt_key = f.read()
+db = firestore.Client(project=os.getenv('PROJECT'))
 
-def str_bytes(f, *args):
-  ret = f(*(type(arg) == str and arg.encode('utf-8') or arg for arg in args))
-  return type(ret) == bytes and ret.decode('utf-8') or ret
-
-@app.route('/pages')
+@app.route('/api/pages', methods=['GET'])
 def get_pages():
   pages = [doc.to_dict() | {'name': doc.id} for doc in db.collection('pages').get()]
   return jsonify({"pages": pages})
 
-@app.route('/authenticate', methods=['POST'])
+@app.route('/api/pages/<page>', methods=['POST'])
+def save_page(page):
+  db.collection('pages').document(page).set({'contents': request.data.decode('utf-8')}, merge=True)
+  return 'ok'
+
+
+class Password:
+  def check(self, pw, h):
+    return bcrypt.checkpw(pw.encode('utf-8'), h.encode('utf-8'))
+
+  def hash(self, pw):
+    return bcrypt.hashpw(pw.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+@app.route('/api/authenticate', methods=['POST'])
 def auth_verify():
   content = request.form
-  app.logger.info(content)
 
   user = db.collection('users').document(content['email']).get()
   if not user.exists:
-    raise Forbidden('user not authenticated')
+    raise Forbidden('user not registered')
 
   user_data = user.to_dict()
-  app.logger.info(user_data)
+  pw = Password()
 
   if not 'code' in content:
-    if not str_bytes(bcrypt.checkpw, content['password'], user_data['password']):
-      raise Forbidden('pw: user not authenticated')
+    if not pw.check(content['password'], user_data['password']):
+      raise Forbidden('user not authenticated')
 
   if 'code' in content and 'code' in user_data:
     if content['code'] != user_data['code']:
-      raise Forbidden('code: user not authenticated')
+      raise Forbidden('user not authenticated')
 
   if 'new_password' in content:
-    password = str_bytes(bcrypt.hashpw, content['new_password'], bcrypt.gensalt())
+    password = pw.hash(content['new_password'])
     user.reference.set({'password': password})
 
-  return jsonify({"auth": jwt.encode({'email': content['email']}, jwt_key, algorithm='EdDSA')})
+  return jsonify({"auth": jwt.encode({'email': content['email']}, os.getenv('JWT_KEY'), algorithm='EdDSA')})
 
-@app.route('/health')
+@app.route('/api/health')
 def health():
   return 'ok'
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+  return os.getenv('INDEX')
+

@@ -4,6 +4,10 @@ import { useCookies } from '@vueuse/integrations/useCookies'
 const cookies = useCookies(['auth_token']);
 
 export function useAuth() {
+  function getToken() {
+    return cookies.get('auth_token');
+  }
+
   function getEmail() {
     const token = cookies.get('auth_token');
     if(token) {
@@ -32,5 +36,5 @@ export function useAuth() {
     }
   }
 
-  return { getEmail, logout, submit };
+  return { getToken, getEmail, logout, submit };
 }

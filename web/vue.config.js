@@ -4,11 +4,15 @@ const webpack = require('webpack');
 module.exports = defineConfig({
   transpileDependencies: true,
 
+  publicPath: process.env.NODE_ENV === 'production'
+    ? 'https://storage.googleapis.com/foxmarchingwarriors-static/'
+    : '/',
+
   devServer: {
     allowedHosts: "all",
     proxy: {
       '^/api/.*': {
-        target: 'https://foxmarchingwarriors.band/',
+        target: 'https://foxmarchingwarriors-377984045382.us-central1.run.app',
       },
     }
   },

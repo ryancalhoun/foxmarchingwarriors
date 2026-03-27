@@ -14,6 +14,9 @@ import './assets/site.css'
 <style scoped>
 .content {
   width: 960px;
-  margin: 40px auto;
+  margin: 0 auto;
+  padding: 40px 0;
+  height: calc(100vh - 40px);
+  position: relative;
 }
 </style>
