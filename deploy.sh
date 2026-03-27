@@ -7,14 +7,14 @@ TIME=$(date +%Y%m%d-%H%M%S)
 
 cd $(dirname $0)
 (
-  cd web
+  cd ui
   NODE_ENV=production npm run build
   cd dist
   gcloud storage cp -R . $BUCKET
 )
 
 (
-  cd api
+  cd service
   docker build . -t $IMAGE:$TIME
   docker push $IMAGE:$TIME
 )
@@ -23,7 +23,7 @@ env=$(cat <<EOF
 PROJECT: $PROJECT
 BUCKET: $BUCKET
 INDEX: |
-  $(cat ./web/dist/index.html)
+  $(cat ./ui/dist/index.html)
 EOF
 )
 
