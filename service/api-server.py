@@ -55,9 +55,15 @@ def auth_verify():
 
   return jsonify({"auth": jwt.encode({'email': content['email']}, os.getenv('JWT_KEY'), algorithm='EdDSA')})
 
-@app.route('/api/health')
-def health():
-  return 'ok'
+@app.route('/api/started')
+def startup_probe():
+  return 'yes'
+
+@app.route('/api/alive')
+def liveness_probe():
+  if len(db.collection('pages').get()) == 0:
+    raise InternalServerError('database error')
+  return 'yes'
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

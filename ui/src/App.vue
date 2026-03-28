@@ -13,10 +13,16 @@ import './assets/site.css'
 
 <style scoped>
 .content {
-  width: 960px;
-  margin: 0 auto;
-  padding: 40px 0;
+  width: 100%;
+  padding: 40px 16px;
   height: calc(100vh - 40px);
   position: relative;
 }
+@media screen and (min-width: 768px) {
+  .content {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+
 </style>

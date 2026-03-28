@@ -36,6 +36,7 @@ gcloud run deploy foxmarchingwarriors \
   --timeout=10 \
   --allow-unauthenticated \
   --min-instances=1 \
-  --liveness-probe=timeoutSeconds=1,httpGet.port=5000,httpGet.path=/api/health \
+  --startup-probe=timeoutSeconds=1,periodSeconds=10,httpGet.port=5000,httpGet.path=/api/started \
+  --liveness-probe=timeoutSeconds=1,periodSeconds=300,httpGet.port=5000,httpGet.path=/api/alive \
   --env-vars-file=<(echo "$env") \
   --set-secrets=JWT_KEY=jwt-secret:latest

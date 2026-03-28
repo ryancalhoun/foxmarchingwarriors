@@ -1,17 +1,28 @@
 <template>
   <nav>
-    <router-link v-for="page in orderedPages" :to="page.name"> {{ page.name }} </router-link>
+   <div class="title">
+      <router-link to="/" @click="menu = false"> foxmarchingwarriors </router-link>
+    </div>
+    <div class="toggle">
+      <a href="#" @click.prevent="toggle()">
+        <fa :icon="menu ? 'times' : 'bars'"/>
+      </a>
+    </div>
+    <div class="menu" :class="{ open: menu }">
 
-    <div class="user">
-      <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> </router-link>
-      <router-link v-else :to="{ name: 'login' }"> login </router-link>
+      <router-link v-for="page in orderedPages" :to="page.name"> {{ page.name }} </router-link>
+
+      <div class="user">
+        <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> </router-link>
+        <router-link v-else :to="{ name: 'login' }"> login </router-link>
+      </div>
     </div>
   </nav>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 
 const { pages } = defineProps(['pages']);
@@ -22,13 +33,21 @@ const orderedPages = computed(() => {
   }
 });
 
+const menu = ref(false);
+
 const auth = useAuth();
 const user = ref(auth.getEmail());
 
+const router = useRouter();
 const route = useRoute();
 watch(route, (to) => {
   user.value = auth.getEmail();
+  menu.value = false;
 });
+
+function toggle() {
+  menu.value = !menu.value;
+}
 
 </script>
 
@@ -37,19 +56,61 @@ nav {
   background: #222;
   width: 100%;
   height: 40px;
-  padding: 4px 20px;
+  padding: 0 16px;
   position: relative;
+  z-index: 1;
 }
 a {
   color: white;
   display: inline-block;
-  margin: 4px 24px;
   text-decoration: none;
-  text-transform: capitalize;
+  line-height: 40px;
 }
-.user {
+.title a {
+}
+.menu a {
+  margin: 0 24px;
+  text-transform: capitalize;
+  display: block;
+  height: 40px;
+}
+
+.menu {
+  position: absolute;
+  display: none;
+  left: 0;
+  width: 100%;
+}
+.menu.open {
+  display: block;
+  background: black;
+  top: 40px;
+}
+.toggle {
   display: inline-block;
   position: absolute;
-  right: 20px;
+  right: 16px;
+  bottom: 0;
+}
+@media screen and (min-width: 768px) {
+  nav {
+    padding: 0 40px;
+  }
+  .toggle {
+    display: none;
+  }
+  .menu {
+    display: block;
+    top: 0;
+    padding-left: 240px;
+  }
+  .menu a {
+    display: inline-block;
+  }
+  .user {
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+  }
 }
 </style>

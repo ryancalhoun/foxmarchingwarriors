@@ -87,33 +87,47 @@ async function reset() {
 <style scoped>
 form {
   display: block;
-  width: 32em;
-  margin: 120px auto;
+  width: 100%;
 }
 .row {
   margin-bottom: 12px;
   position: relative;
-  height: 2em;
-}
-input, button {
-  display: block;
-  padding: 4px 12px;
-  position: absolute;
-  bottom: 0;
+  height: 4em;
 }
 label {
-  display: inline-block;
-  width: 10em;
-  text-align: right;
-  position: absolute;
-  bottom: 0.2em;
-  left: -8px;
+  display: block;
 }
 input {
-  width: calc(100% - 12em);
-  right: 0;
+  width: 100%;
 }
 button {
   left: 12em;
+}
+@media screen and (min-width: 768px) {
+  form {
+    width: 32em;
+    margin: 120px auto;
+  }
+  input, button {
+    display: block;
+    padding: 4px 12px;
+    position: absolute;
+    bottom: 0;
+  }
+  input {
+    width: calc(100% - 12em);
+    right: 0;
+  }
+  label {
+    display: inline-block;
+    width: 10em;
+    text-align: right;
+    position: absolute;
+    bottom: 0.2em;
+    left: -8px;
+  }
+  .row {
+    height: 2em;
+  }
 }
 </style>
