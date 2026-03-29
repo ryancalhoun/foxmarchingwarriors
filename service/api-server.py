@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from google.cloud import firestore
+from google.cloud import firestore, storage
 from werkzeug.exceptions import *
 import bcrypt
 import jwt
@@ -22,6 +22,16 @@ def save_page(page):
   db.collection('pages').document(page).set({'contents': request.data.decode('utf-8')}, merge=True)
   return 'ok'
 
+@app.route('/api/uploads', methods=['POST'])
+def upload():
+  file = request.files['file']
+
+  client = storage.Client(project=os.getenv('PROJECT'))
+  bucket = client.bucket(os.getenv('BUCKET'))
+  obj = bucket.blob(f'uploads/{file.filename}')
+  obj.upload_from_file(file)
+
+  return jsonify({'url': obj.public_url})
 
 class Password:
   def check(self, pw, h):

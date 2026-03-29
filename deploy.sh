@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT=foxmarchingwarriors
-BUCKET=gs://$PROJECT-static
+BUCKET=$PROJECT-static
 IMAGE=us-central1-docker.pkg.dev/$PROJECT/docker/www-api
 TIME=$(date +%Y%m%d-%H%M%S)
 
@@ -10,7 +10,7 @@ cd $(dirname $0)
   cd ui
   NODE_ENV=production npm run build
   cd dist
-  gcloud storage cp -R . $BUCKET
+  gcloud storage cp -R . gs://$BUCKET
 )
 
 (
