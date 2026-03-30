@@ -14,7 +14,7 @@
 
       <div class="user">
         <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> </router-link>
-        <router-link v-else :to="{ name: 'login' }"> login </router-link>
+        <router-link v-else :to="{ name: 'login' }"> <fa icon="fa-lock"/> login </router-link>
       </div>
     </div>
   </nav>
@@ -36,12 +36,12 @@ const orderedPages = computed(() => {
 const menu = ref(false);
 
 const auth = useAuth();
-const user = ref(auth.getEmail());
+const user = ref(auth.getAuthInfo());
 
 const router = useRouter();
 const route = useRoute();
 watch(route, (to) => {
-  user.value = auth.getEmail();
+  user.value = auth.getAuthInfo();
   menu.value = false;
 });
 

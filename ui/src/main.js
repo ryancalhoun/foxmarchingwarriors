@@ -7,6 +7,9 @@ import {
   faCircleXmark,
   faEdit,
   faFloppyDisk,
+  faLock,
+  faLockOpen,
+  faRightFromBracket,
   faTimes,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +21,9 @@ library.add(
   faCircleXmark,
   faEdit,
   faFloppyDisk,
-  faEdit,
+  faLock,
+  faLockOpen,
+  faRightFromBracket,
   faTimes,
   faUser,
 )

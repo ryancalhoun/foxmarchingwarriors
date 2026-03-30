@@ -51,9 +51,15 @@ const auth = useAuth();
 
 const { action } = defineProps(['action']);
 
+function getEmail() {
+  const info = auth.getAuthInfo();
+  if(info)
+    return info.email;
+}
+
 const waiting = ref(false);
 const code = ref(route.query.code);
-const email = ref(route.query.email || auth.getEmail());
+const email = ref(route.query.email || getEmail());
 const password = ref();
 const new_password = ref();
 const confirm_password = ref();

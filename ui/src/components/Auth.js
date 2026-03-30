@@ -8,10 +8,10 @@ export function useAuth() {
     return cookies.get('auth_token');
   }
 
-  function getEmail() {
+  function getAuthInfo() {
     const token = cookies.get('auth_token');
     if(token) {
-      return jwt.decode(token).email;
+      return jwt.decode(token);
     }
   }
 
@@ -36,5 +36,5 @@ export function useAuth() {
     }
   }
 
-  return { getToken, getEmail, logout, submit };
+  return { getToken, getAuthInfo, logout, submit };
 }

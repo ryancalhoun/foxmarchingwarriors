@@ -12,7 +12,7 @@ module.exports = defineConfig({
     allowedHosts: "all",
     proxy: {
       '^/api/.*': {
-        target: 'https://foxmarchingwarriors-377984045382.us-central1.run.app',
+        target: 'https://foxmarchingwarriors.band',
       },
     }
   },

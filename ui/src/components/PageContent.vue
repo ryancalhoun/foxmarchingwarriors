@@ -9,12 +9,10 @@
 
     <div v-else class="page-content" v-html="page.contents"/>
 
-    <div class="controls" v-if='user_token && editing'>
-      <button @click.prevent="save"> <fa icon="fa-floppy-disk"/> Save </button>
-      <button @click.prevent="cancel"> <fa icon="fa-circle-xmark"/> Cancel </button>
-    </div>
-    <div class="controls" v-if='user_token && !editing'>
-      <button @click.prevent="edit"> <fa icon="fa-edit"/> Edit </button>
+    <div class="controls" v-if="info && info.scopes && info.scopes.includes('edit')">
+      <button @click.prevent="save" v-if="editing"> <fa icon="fa-floppy-disk"/> Save </button>
+      <button @click.prevent="cancel" v-if="editing"> <fa icon="fa-circle-xmark"/> Cancel </button>
+      <button @click.prevent="edit" v-if="!editing"> <fa icon="fa-edit"/> Edit </button>
     </div>
   </div>
 </template>
@@ -38,6 +36,7 @@ const changes = ref();
 
 const auth = useAuth();
 const user_token = auth.getToken();
+const info = auth.getAuthInfo();
 
 function getPage() {
   return pages.pages.find((p) => p.name == route.params.page);
