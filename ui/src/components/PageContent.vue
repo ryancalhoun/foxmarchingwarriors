@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { QuillEditor } from '@vueup/vue-quill'
 import BlotFormatter from 'quill-blot-formatter'
@@ -30,6 +30,9 @@ const { pages } = defineProps(['pages'])
 
 const router = useRouter();
 const route = useRoute();
+watch(route, (to) => {
+  cancel();
+});
 
 const editing = ref(false);
 const changes = ref();
