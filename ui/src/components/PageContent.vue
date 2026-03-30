@@ -1,7 +1,13 @@
 <template>
   <div v-if="page">
-    <v-markdown-editor v-if='editing' v-model='changes' :upload-action="upload"/>
-    <v-markdown-view v-else :content='page.contents'/>
+    <quill-editor v-if='editing'
+      theme="snow"
+      :toolbar="toolbar"
+      :modules='modules'
+      v-model:content='changes'
+      contentType='html'/>
+
+    <div v-else class="page-content" v-html="page.contents"/>
 
     <div class="controls" v-if='user_token && editing'>
       <button @click.prevent="save"> <fa icon="fa-floppy-disk"/> Save </button>
@@ -16,8 +22,9 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { VMarkdownView, VMarkdownEditor } from 'vue3-markdown'
-import 'vue3-markdown/dist/vue3-markdown.css'
+import { QuillEditor } from '@vueup/vue-quill'
+import BlotFormatter from 'quill-blot-formatter'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 import { useAuth } from '@/components/Auth'
 
@@ -69,8 +76,41 @@ function cancel() {
   editing.value = false;
 }
 
-function upload(file) {
+async function upload(file) {
+  const data = new FormData();
+  data.append('file', file);
+
+  const response = await fetch(`/api/uploads/${page.value.name}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${user_token}`,
+    },
+    body: data,
+  });
+
+  return (await response.json()).url;
 }
+
+const toolbar = [
+  [{ 'header': [1, 2, 3, false] }],
+  ['bold', 'italic', 'underline', 'strike'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+  [{ 'indent': '-1'}, { 'indent': '+1' }],
+  [{ 'color': [] }, { 'background': [] }], 
+  ['image'],
+];
+
+const modules = [{
+/*
+  name: 'blotFormatter',
+  module: BlotFormatter,
+  options: { align }
+}, {
+*/
+  name: 'imageUploader',
+  module: ImageUploader,  
+  options: { upload }
+}];
 
 </script>
 
@@ -84,5 +124,8 @@ function upload(file) {
   background: none;
   border: none;
   cursor: pointer;
+}
+img {
+  max-width: 100%;
 }
 </style>
