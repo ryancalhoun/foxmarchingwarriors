@@ -29,12 +29,6 @@ library.add(
 )
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { Quill } from '@vueup/vue-quill'
-import ImageUploader from 'quill-image-uploader'
-import BlotFormatter from 'quill-blot-formatter'
-Quill.register({imageUploader: ImageUploader});
-//Quill.register({blotFormatter: BlotFormatter});
-
 const app = createApp(App);
 app.use(router);
 app.component('fa', FontAwesomeIcon);

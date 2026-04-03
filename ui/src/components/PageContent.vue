@@ -1,13 +1,8 @@
 <template>
   <div v-if="page">
-    <quill-editor v-if='editing'
-      theme="snow"
-      :toolbar="toolbar"
-      :modules='modules'
-      v-model:content='changes'
-      contentType='html'/>
+    <edit-widget v-if='editing' :on-upload="upload" :contents="changes"/>
 
-    <div v-else class="page-content" v-html="page.contents"/>
+    <render-doc v-else :contents="page.contents"/>
 
     <div class="controls" v-if="info && info.scopes && info.scopes.includes('edit')">
       <button @click.prevent="save" v-if="editing"> <fa icon="fa-floppy-disk"/> Save </button>
@@ -20,11 +15,9 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { QuillEditor } from '@vueup/vue-quill'
-import BlotFormatter from 'quill-blot-formatter'
-import '@vueup/vue-quill/dist/vue-quill.snow.css'
-
 import { useAuth } from '@/components/Auth'
+import EditWidget from '@/components/EditWidget'
+import RenderDoc from '@/components/RenderDoc'
 
 const { pages } = defineProps(['pages'])
 
@@ -65,7 +58,7 @@ async function save() {
     headers: {
       Authorization: `Bearer ${user_token}`,
     },
-    body: changes.value,
+    body: JSON.stringify(changes.value),
   });
   if(result.ok) {
     getPage().contents = changes.value;
@@ -74,6 +67,7 @@ async function save() {
 }
 
 function cancel() {
+  console.log(changes.value);
   changes.value = '';
   editing.value = false;
 }

@@ -7,7 +7,13 @@ import { ref } from 'vue'
 const pages = ref();
 
 (async () => {
-  pages.value = await (await fetch('/api/pages')).json();
+  const result = await (await fetch('/api/pages')).json();
+  pages.value = {
+    pages: result.pages.map((p) => {
+      p.contents = JSON.parse(p.contents);
+      return p;
+    })
+  };
 })();
 
 </script>
