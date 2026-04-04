@@ -2,7 +2,8 @@
 
 PROJECT=foxmarchingwarriors
 BUCKET=$PROJECT-static
-IMAGE=us-central1-docker.pkg.dev/$PROJECT/docker/www-api
+SERVICE_IMAGE=us-central1-docker.pkg.dev/$PROJECT/docker/service
+JOB_IMAGE=us-central1-docker.pkg.dev/$PROJECT/docker/job
 TIME=$(date +%Y%m%d-%H%M%S)
 
 cd $(dirname $0)
@@ -15,8 +16,14 @@ cd $(dirname $0)
 
 (
   cd service
-  docker build . -t $IMAGE:$TIME
-  docker push $IMAGE:$TIME
+  docker build . -t $SERVICE_IMAGE:$TIME
+  docker push $SERVICE_IMAGE:$TIME
+)
+
+(
+  cd jobs
+  docker build . -t $JOB_IMAGE:$TIME
+  docker push $JOB_IMAGE:$TIME
 )
 
 env=$(cat <<EOF
@@ -31,7 +38,7 @@ gcloud run deploy foxmarchingwarriors \
   --no-invoker-iam-check \
   --project=$PROJECT \
   --region=us-central1 \
-  --image=$IMAGE:$TIME \
+  --image=$SERVICE_IMAGE:$TIME \
   --port=5000 \
   --timeout=10 \
   --allow-unauthenticated \
@@ -40,3 +47,10 @@ gcloud run deploy foxmarchingwarriors \
   --liveness-probe=timeoutSeconds=1,periodSeconds=300,httpGet.port=5000,httpGet.path=/api/alive \
   --env-vars-file=<(echo "$env") \
   --set-secrets=JWT_KEY=jwt-secret:latest
+
+gcloud run jobs deploy background-job \
+  --project=$PROJECT \
+  --region=us-central1 \
+  --image=$JOB_IMAGE:$TIME \
+  --set-env-vars=PROJECT=$PROJECT \
+  --set-secrets=RESEND_API_KEY=resend-api-key:latest
