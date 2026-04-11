@@ -15,6 +15,7 @@
       <div class="user">
         <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> </router-link>
         <router-link v-else :to="{ name: 'login' }"> <fa icon="fa-lock"/> login </router-link>
+        <router-link v-if="user && user.scopes.includes('users')" :to="{ name: 'settings' }"> <fa icon="fa-gear"/> </router-link>
       </div>
     </div>
   </nav>
@@ -31,6 +32,7 @@ const orderedPages = computed(() => {
   if(pages) {
     return pages.pages.sort((a,b) => a.order - b.order)
   }
+  return [];
 });
 
 const menu = ref(false);

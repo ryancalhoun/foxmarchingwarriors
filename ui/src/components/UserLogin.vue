@@ -7,15 +7,19 @@
       <label> Email </label>
       <input type="text" v-model="email" :disabled="waiting || route.name == 'reset'"/>
     </div>
-    <div class="row" v-if="route.name != 'reset'">
+    <div class="row" v-if="needPassword()">
       <label> Password </label>
       <input type="password" v-model="password" :disabled="waiting"/>
     </div>
-    <div class="row" v-if="route.name != 'login'">
+    <div class="row" v-if="route.name == 'login'">
+      <label> &nbsp; </label>
+      <router-link :to="{ name: 'forgot' }"> Forgot password? </router-link>
+    </div>
+    <div class="row" v-if="needNewPassword()">
       <label> New Password </label>
       <input type="password" v-model="new_password" :disabled="waiting"/>
     </div>
-    <div class="row" v-if="route.name != 'login'">
+    <div class="row" v-if="needNewPassword()">
       <label> Confirm Password </label>
       <input type="password" v-model="confirm_password" :disabled="waiting"/>
     </div>
@@ -31,9 +35,14 @@
         Change
       </button>
       <button
-        v-else type="submit" @click.prevent="reset()"
+        v-else-if="route.name == 'reset'" type="submit" @click.prevent="reset()"
         :disabled="waiting || !email || !code || !new_password || new_password != confirm_password">
         Reset
+      </button>
+      <button
+        v-else-if="route.name == 'forgot'" type="submit" @click.prevent="sendReset()"
+        :disabled="waiting || !email">
+        Send Reset Email
       </button>
     </div>
   </form>
@@ -55,6 +64,14 @@ function getEmail() {
   const info = auth.getAuthInfo();
   if(info)
     return info.email;
+}
+
+function needPassword() {
+  return ['login', 'change', 'reset'].includes(route.name);
+}
+
+function needNewPassword() {
+  return ['change', 'reset'].includes(route.name);
 }
 
 const waiting = ref(false);
@@ -87,6 +104,9 @@ async function change() {
 }
 async function reset() {
   await handleAuth({ email: email.value, new_password: new_password.value, code: code.value });
+}
+async function sendReset() {
+  await auth.sendReset(email.value);
 }
 </script>
 
@@ -131,6 +151,12 @@ button {
     position: absolute;
     bottom: 0.2em;
     left: -8px;
+  }
+  a {
+    display: block;
+    position: absolute;
+    left: 10em;
+    color: black;
   }
   .row {
     height: 2em;

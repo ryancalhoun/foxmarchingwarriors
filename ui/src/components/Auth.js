@@ -36,5 +36,18 @@ export function useAuth() {
     }
   }
 
-  return { getToken, getAuthInfo, logout, submit };
+  async function sendReset(email) {
+    const response = await fetch('api/forgot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({email: email}),
+    });
+    if(! response.ok) {
+      throw new Error('Error sending reset');
+    }
+  }
+
+  return { getToken, getAuthInfo, logout, submit, sendReset };
 }

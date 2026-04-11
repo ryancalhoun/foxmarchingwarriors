@@ -8,6 +8,7 @@ import jwt
 import logging
 import os
 import uuid
+import urllib.request
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
@@ -61,6 +62,25 @@ def upload(page):
 
   return jsonify({'url': obj.public_url})
 
+@app.route('/api/users', methods=['GET'])
+def get_users():
+  get_user(request, scope='users')
+
+  users = [doc.to_dict() | {'email': doc.id} for doc in db.collection('users').get()]
+  for user in users:
+    user['password'] = bool(user.get('password'))
+    user['code'] = bool(user.get('code'))
+
+  return jsonify({"users": users})
+
+@app.route('/api/users/<email>', methods=['POST'])
+def update_user(email):
+  get_user(request, scope='users')
+
+  user = db.collection('users').document(email)
+  user.set(request.form, merge=True)
+  return 'ok'
+
 class Password:
   def check(self, pw, h):
     return bcrypt.checkpw(pw.encode('utf-8'), h.encode('utf-8'))
@@ -98,6 +118,62 @@ def auth_verify():
 
   return jsonify({"auth": jwt.encode(jwt_id, os.getenv('JWT_KEY'), algorithm='EdDSA')})
 
+@app.route('/api/forgot', methods=['POST'])
+def send_forgot_email():
+  content = request.form
+
+  user = db.collection('users').document(content['email']).get()
+  if not user.exists:
+    raise Forbidden('user not registered')
+
+  code = str(uuid.uuid4())
+  user.reference.set({'code': code}, merge=True)
+
+  params = urllib.parse.urlencode({
+    'email': content['email'],
+    'code': code,
+  })
+
+  button_style = " ".join([f'{k}: {v};' for k,v in {
+    'padding':         '8px 32px',
+    'color':           'white',
+    'background':      'black',
+    'border-radius':   '8px',
+    'text-decoration': 'none',
+    'font-size':       'x-large',
+  }.items()])
+
+  reset_info = {
+    'to': content['email'],
+    'subject': 'Password Reset',
+    'body': f'''
+      <p> Hello! </p>
+      <p> You requested a link to reset your FoxMarchingWarriors password. <p>
+      <p> Click the link below to create a new password. </p>
+      <p>
+        <a href="https://foxmarchingwarriors.band/reset-password?{params}" style="{button_style}">
+          Log in
+        </a>
+      </p>
+      <p> If you did not make this request, please disregard this email. </p>
+    '''
+  }
+
+  tasks = tasks_v2.CloudTasksClient()
+  path = tasks.queue_path(os.getenv('PROJECT'), os.getenv('REGION'), os.getenv('QUEUE'))
+
+  task = {
+    'http_request': {
+      'http_method': 'POST',
+      'url': os.getenv('SEND_URL'),
+      'headers': {'Content-Type': 'application/json'},
+      'body': json.dumps(reset_info).encode(),
+    }
+  }
+
+  tasks.create_task(parent=path, task=task)
+  return 'ok'
+
 @app.route('/api/started')
 def startup_probe():
   return 'yes'
@@ -107,23 +183,6 @@ def liveness_probe():
   if len(db.collection('pages').get()) == 0:
     raise InternalServerError('database error')
   return 'yes'
-
-@app.route('/api/send', methods=['POST'])
-def send_email():
-  tasks = tasks_v2.CloudTasksClient()
-  path = tasks.queue_path(os.getenv('PROJECT'), os.getenv('REGION'), os.getenv('QUEUE'))
-
-  task = {
-    'http_request': {
-      'http_method': 'POST',
-      'url': os.getenv('SEND_URL'),
-      'headers': {'Content-Type': 'application/json'},
-      'body': json.dumps(request.json).encode(),
-    }
-  }
-
-  tasks.create_task(parent=path, task=task)
-  return 'ok'
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PageContent from '@/components/PageContent'
 import UserLogin from '@/components/UserLogin'
 import UserProfile from '@/components/UserProfile'
+import SiteSettings from '@/components/SiteSettings'
 
 const routes = [
   {
@@ -16,6 +17,11 @@ const routes = [
     component: UserLogin,
   },
   {
+    path: '/forgot-password',
+    name: 'forgot',
+    component: UserLogin,
+  },
+  {
     path: '/reset-password',
     name: 'reset',
     component: UserLogin,
@@ -24,6 +30,11 @@ const routes = [
     path: '/user',
     name: 'user',
     component: UserProfile,
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: SiteSettings,
   },
   {
     path: '/:page',
