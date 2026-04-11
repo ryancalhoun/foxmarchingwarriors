@@ -1,0 +1,12 @@
+PROJECT=foxmarchingwarriors
+REGION=us-central1
+GCP_SERVICE_ACCOUNT=377984045382-compute@developer.gserviceaccount.com
+
+BUCKET=$PROJECT-static
+
+REPO=$REGION-docker.pkg.dev/$PROJECT/docker
+TIME=$(date +%Y%m%d-%H%M%S)
+
+APP_NAME=foxmarchingwarriors
+JOB_NAME=background-jobs
+QUEUE_NAME=queue
