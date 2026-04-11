@@ -58,6 +58,9 @@ function eachLineOf(text, attrs, e, current) {
         if(attrs.underline) {
           node = h('u', [node]);
         }
+        if(attrs.link) {
+          node = h('a', { href: attrs.link }, [node]);
+        }
       }
 
       current.push(node);
@@ -75,5 +78,8 @@ function eachLineOf(text, attrs, e, current) {
 <style scoped>
 p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
+}
+img {
+  max-width: 100%;
 }
 </style>

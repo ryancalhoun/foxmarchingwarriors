@@ -11,6 +11,9 @@ import Quill from 'quill'
 import ImageUploader from 'quill2-image-uploader'
 import ImageResizor from 'quill-image-resizor'
 
+const Link = Quill.import('formats/link');
+Link.PROTOCOL_WHITELIST.push('webcal');
+
 import 'quill/dist/quill.snow.css'
 
 ImageResizor.Quill = Quill;
@@ -25,6 +28,7 @@ const toolbar = [
   [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
   [{ 'indent': '-1'}, { 'indent': '+1' }],
   [{ 'color': [] }, { 'background': [] }], 
+  ['link'],
   ['image'],
 ];
 
