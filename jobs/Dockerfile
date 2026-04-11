@@ -4,4 +4,4 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt --root-user-action=ignore
 
 COPY *.py .
-CMD ["python3", "job.py"]
+CMD ["flask", "--app=background-job", "run", "--host=0.0.0.0"]

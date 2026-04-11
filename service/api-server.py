@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
-from google.cloud import firestore, storage
+from google.cloud import firestore, storage, tasks_v2
 from werkzeug.exceptions import *
 from jwt.exceptions import *
 import bcrypt
+import json
 import jwt
 import logging
 import os
@@ -106,6 +107,23 @@ def liveness_probe():
   if len(db.collection('pages').get()) == 0:
     raise InternalServerError('database error')
   return 'yes'
+
+@app.route('/api/send', methods=['POST'])
+def send_email():
+  tasks = tasks_v2.CloudTasksClient()
+  path = tasks.queue_path(os.getenv('PROJECT'), os.getenv('REGION'), os.getenv('QUEUE'))
+
+  task = {
+    'http_request': {
+      'http_method': 'POST',
+      'url': os.getenv('SEND_URL'),
+      'headers': {'Content-Type': 'application/json'},
+      'body': json.dumps(request.json).encode(),
+    }
+  }
+
+  tasks.create_task(parent=path, task=task)
+  return 'ok'
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
