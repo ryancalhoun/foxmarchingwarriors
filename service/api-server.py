@@ -32,10 +32,13 @@ def get_user(req, **kwargs):
     raise Forbidden('user not allowed')
 
   if 'scope' in kwargs:
-    if kwargs['scope'] not in (user.to_dict().get('scopes') or []):
-      raise Forbidden('user not allowed')
+    check_scope(user, kwargs['scope'])
 
   return user
+
+def check_scope(user, scope):
+  if scope not in (user.to_dict().get('scopes') or []):
+      raise Forbidden('user not allowed')
 
 @app.route('/api/pages', methods=['GET'])
 def get_pages():
@@ -62,6 +65,11 @@ def upload(page):
 
   return jsonify({'url': obj.public_url})
 
+@app.route('/api/events', methods=['GET'])
+def get_events():
+  events = [e.to_dict() for e in db.collection('events').get()]
+  return jsonify({'events': events})
+
 @app.route('/api/users', methods=['GET'])
 def get_users():
   get_user(request, scope='users')
@@ -75,9 +83,15 @@ def get_users():
 
 @app.route('/api/users/<email>', methods=['POST'])
 def update_user(email):
-  get_user(request, scope='users')
+  user = get_user(request)
 
-  user = db.collection('users').document(email)
+  if user.id == email:
+    check_scope(user, 'edit')
+    user = user.reference
+  else:
+    check_scope(user, 'users')
+    user = db.collection('users').document(email)
+
   user.set(request.form, merge=True)
   return 'ok'
 

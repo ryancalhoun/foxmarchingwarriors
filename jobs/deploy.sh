@@ -8,6 +8,13 @@ cd $(dirname $0)
 docker build . -t $REPO/job:$TIME
 docker push $REPO/job:$TIME
 
+env=$(cat <<EOF
+PROJECT: $PROJECT
+REGION: $REGION
+CALENDAR: $CALENDAR
+EOF
+)
+
 gcloud tasks queues update $QUEUE_NAME \
   --project=$PROJECT \
   --location=$REGION \
@@ -27,5 +34,5 @@ gcloud run deploy $JOB_NAME \
   --port=5000 \
   --timeout=30 \
   --no-allow-unauthenticated \
-  --set-env-vars=PROJECT=$PROJECT \
+  --env-vars-file=<(echo "$env") \
   --set-secrets=RESEND_API_KEY=resend-api-key:latest

@@ -1,7 +1,8 @@
 <template>
   <div v-if="user">
-    <p> Logged in as {{ user.email }}. </p>
+    <h1> Profile </h1>
 
+    <p> Logged in as {{ user.email }}. </p>
     <ul>
       <li> <router-link :to="{ name: 'change' }"> <fa icon="fa-lock-open"/> Change password </router-link> </li>
       <li> <a href='#' @click.prevent="logout()"> <fa icon="fa-right-from-bracket"/> Logout </a> </li>

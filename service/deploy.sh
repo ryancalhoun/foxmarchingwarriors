@@ -20,7 +20,7 @@ PROJECT: $PROJECT
 REGION: $REGION
 BUCKET: $BUCKET
 QUEUE: $QUEUE_NAME
-SEND_URL: $background_service_url/send
+SEND_URL: $background_service_url/send-email
 INDEX: |
   $(cat ../ui/dist/index.html)
 EOF

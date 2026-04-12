@@ -10,3 +10,5 @@ TIME=$(date +%Y%m%d-%H%M%S)
 APP_NAME=foxmarchingwarriors
 JOB_NAME=background-jobs
 QUEUE_NAME=queue
+
+CALENDAR=https://calendar.google.com/calendar/ical/670fd9e51d455ae9fa4b5b8e8818a90582e4ed93e47e46396aa66473073729e5%40group.calendar.google.com/public/basic.ics
