@@ -1,7 +1,10 @@
 <template>
   <nav>
-   <div class="title">
-      <router-link to="/" @click="menu = false"> foxmarchingwarriors </router-link>
+    <div class="title">
+      <router-link to="/" @click="menu = false">
+        <img src="/logo.png"/>
+        <span> foxmarchingwarriors </span>
+      </router-link>
     </div>
     <div class="toggle">
       <a href="#" @click.prevent="toggle()">
@@ -13,8 +16,9 @@
       <router-link v-for="page in orderedPages" :to="page.name"> {{ page.name }} </router-link>
 
       <div class="user">
-        <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> </router-link>
+        <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> profile </router-link>
         <router-link v-else :to="{ name: 'login' }"> <fa icon="fa-lock"/> login </router-link>
+
         <router-link v-if="user && user.scopes.includes('users')" :to="{ name: 'settings' }"> <fa icon="fa-gear"/> </router-link>
       </div>
     </div>
@@ -68,7 +72,12 @@ a {
   text-decoration: none;
   line-height: 40px;
 }
-.title a {
+
+.title img {
+  height: 24px;
+  position: relative;
+  bottom: -8px;
+  border-radius: 50%;
 }
 .menu a {
   margin: 0 24px;
@@ -99,6 +108,9 @@ a {
     padding: 0 40px;
   }
   .toggle {
+    display: none;
+  }
+  .title a :not(img) {
     display: none;
   }
   .menu {

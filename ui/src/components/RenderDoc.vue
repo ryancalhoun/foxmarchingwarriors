@@ -15,7 +15,16 @@ const rendered = computed(() => {
       // single blank line, styles apply to entire line
       if(v.insert == '\n' && v.attributes) {
         if(v.attributes.header) {
-          e.push(h(`h${v.attributes.header}`, current));
+          e.push(h(`h${v.attributes.header}`, {}, current));
+        }
+        else if(v.attributes.list) {
+          e.push(h('li', {}, current));
+        }
+        else {
+          e.push(h('p', {}, current));
+        }
+        if(v.attributes.indent) {
+          e[e.length-1].props['data-indent'] = v.attributes.indent;
         }
         current = [];
         return;
@@ -79,7 +88,14 @@ function eachLineOf(text, attrs, e, current) {
 p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
+[data-indent] {
+  padding-left: 48px;
+}
 img {
   max-width: 100%;
+}
+li {
+  list-style: inside;
+  padding-left: 24px;
 }
 </style>

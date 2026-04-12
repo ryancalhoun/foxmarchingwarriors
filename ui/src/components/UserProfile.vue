@@ -3,6 +3,7 @@
     <h1> Profile </h1>
 
     <p> Logged in as {{ user.email }}. </p>
+    {{ name }}
     <ul>
       <li> <router-link :to="{ name: 'change' }"> <fa icon="fa-lock-open"/> Change password </router-link> </li>
       <li> <a href='#' @click.prevent="logout()"> <fa icon="fa-right-from-bracket"/> Logout </a> </li>
@@ -11,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 
@@ -22,6 +23,22 @@ const user = ref(auth.getAuthInfo());
 if(! user.value) {
   router.push({name: 'login'});
 }
+
+const name = ref();
+
+const user_token = auth.getToken();
+onMounted(async () => {
+  const response = await fetch('/api/users/me', {
+    headers: {
+      Authorization: `Bearer ${user_token}`,
+    }
+  });
+
+  if(response.ok) {
+    const me = await response.json();
+    name.value = me.first + " " + me.last; 
+  }
+});
 
 function logout() {
   auth.logout();

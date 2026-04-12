@@ -15,7 +15,7 @@ import './assets/site.css'
 .content {
   width: 100%;
   padding: 40px 16px;
-  height: calc(100vh - 40px);
+  min-height: calc(100vh - 40px);
   position: relative;
 }
 @media screen and (min-width: 768px) {
