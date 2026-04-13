@@ -2,7 +2,7 @@
   <nav>
     <div class="title">
       <router-link to="/" @click="menu = false">
-        <img src="/logo.png"/>
+        <img src="https://storage.googleapis.com/foxmarchingwarriors-static/logo.png"/>
         <span> foxmarchingwarriors </span>
       </router-link>
     </div>
@@ -16,10 +16,19 @@
       <router-link v-for="page in orderedPages" :to="page.name"> {{ page.name }} </router-link>
 
       <div class="user">
-        <router-link v-if="user" :to="{ name: 'user' }"> <fa icon="fa-user"/> profile </router-link>
-        <router-link v-else :to="{ name: 'login' }"> <fa icon="fa-lock"/> login </router-link>
+        <router-link v-if="user" :to="{ name: 'user' }">
+          <fa icon="fa-user"/>
+          <span class="large-width"> profile </span>
+        </router-link>
+        <router-link v-else :to="{ name: 'login' }">
+          <fa icon="fa-lock"/>
+          login
+        </router-link>
 
-        <router-link v-if="user && user.scopes.includes('users')" :to="{ name: 'settings' }"> <fa icon="fa-gear"/> </router-link>
+        <router-link v-if="user && user.scopes.includes('users')" :to="{ name: 'settings' }">
+          <fa icon="fa-gear"/>
+          <span class="large-width"> settings </span>
+        </router-link>
       </div>
     </div>
   </nav>
@@ -80,7 +89,7 @@ a {
   border-radius: 50%;
 }
 .menu a {
-  margin: 0 24px;
+  margin: 0 16px;
   text-transform: capitalize;
   display: block;
   height: 40px;
@@ -104,9 +113,6 @@ a {
   bottom: 0;
 }
 @media screen and (min-width: 768px) {
-  nav {
-    padding: 0 40px;
-  }
   .toggle {
     display: none;
   }
@@ -116,15 +122,44 @@ a {
   .menu {
     display: block;
     top: 0;
-    padding-left: 240px;
+    padding-left: 40px;
   }
   .menu a {
     display: inline-block;
   }
+  .menu .large-width {
+    display: none;
+  }
   .user {
     display: inline-block;
     position: absolute;
+    right: 0;
+  }
+  .user a {
+    margin: 0 8px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  nav {
+    padding: 0 40px;
+  }
+  .menu {
+    padding-left: 80px;
+  }
+  .menu .large-width {
+    display: initial;
+  }
+  .user {
     right: 20px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .menu {
+    padding-left: 240px;
+  }
+  .menu a {
+    margin: 0 24px;
   }
 }
 </style>
