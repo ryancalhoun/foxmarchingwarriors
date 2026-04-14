@@ -89,14 +89,17 @@ p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 [data-indent] {
-  padding-left: 48px;
+  margin-left: 48px;
 }
 img {
   max-width: 100%;
   margin-top: 30px !important;
 }
 li {
-  list-style: inside;
-  padding-left: 24px;
+  list-style: outside;
+  margin-left: 24px;
+}
+li[data-indent] {
+  margin-left: 72px;
 }
 </style>
