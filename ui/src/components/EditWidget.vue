@@ -59,3 +59,13 @@ onMounted(() => {
   flex-grow: 1;
 }
 </style>
+
+<style>
+.wrap .ql-toolbar {
+  position: sticky;
+  top: 40px;
+  background: white;
+  z-index: 1;
+  box-shadow: 0px 8px 8px -2px #ccc;
+}
+</style>
