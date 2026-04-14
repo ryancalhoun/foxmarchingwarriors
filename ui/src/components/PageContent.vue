@@ -1,9 +1,9 @@
 <template>
   <div v-if="page">
+    <calendar-events v-if="route.params.page == 'events'"/>
+
     <edit-widget v-if='editing' :on-upload="upload" :contents="changes"/>
     <render-doc v-else :contents="page.contents"/>
-
-    <calendar-events v-if="route.params.page == 'events'"/>
 
     <div class="controls" v-if="info && info.scopes && info.scopes.includes('edit')">
       <button @click.prevent="save" v-if="editing"> <fa icon="fa-floppy-disk"/> Save </button>

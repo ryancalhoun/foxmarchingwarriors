@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
-import { computed, h, Fragment } from 'vue'
+import { computed, h, useTemplateRef } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 const { contents } = defineProps(['contents']);
 const rendered = computed(() => {
@@ -68,7 +69,13 @@ function eachLineOf(text, attrs, e, current) {
           node = h('u', [node]);
         }
         if(attrs.link) {
-          node = h('a', { href: attrs.link }, [node]);
+          node = h('a', { href: attrs.link, target: '_blank' }, [node]);
+
+          if(attrs.link.endsWith('.pdf')) {
+            node.children.unshift(h(FontAwesomeIcon, { icon: 'fa-file-pdf' }));
+          } else {
+            node.children.push(h(FontAwesomeIcon, { icon: 'fa-external-link' }));
+          }
         }
       }
 
@@ -101,5 +108,13 @@ li {
 }
 li[data-indent] {
   margin-left: 72px;
+}
+a svg:first-child {
+  padding-right: 8px;
+  font-size: 16px;
+}
+a svg:last-child {
+  padding-left: 8px;
+  font-size: 16px;
 }
 </style>

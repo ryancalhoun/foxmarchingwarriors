@@ -3,12 +3,14 @@
     <h1> Users </h1>
     <table>
       <thead>
-        <th> Last </th>
-        <th> First </th>
-        <th> Email </th>
-        <th> Status </th>
-        <th> Edit </th>
-        <th> Users </th>
+        <tr>
+          <th> Last </th>
+          <th> First </th>
+          <th> Email </th>
+          <th> Status </th>
+          <th> Edit </th>
+          <th> Users </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="user in users">

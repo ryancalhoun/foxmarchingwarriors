@@ -17,3 +17,12 @@ h1, h2, h3, h4, h5, h5 {
 * {
   box-sizing: border-box;
 }
+
+@media print {
+  html, body {
+    font-size: 12px;
+  }
+  nav, button {
+    display: none !important;
+  }
+}
