@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 import EditWidget from '@/components/EditWidget'
@@ -22,12 +22,19 @@ import RenderDoc from '@/components/RenderDoc'
 
 import CalendarEvents from '@/components/CalendarEvents'
 
-const { pages } = defineProps(['pages'])
-
 const router = useRouter();
 const route = useRoute();
+
+const page = ref();
+
 watch(route, (to) => {
+  page.value = null;
   cancel();
+  load();
+});
+
+onMounted(() => {
+  load();
 });
 
 const editing = ref(false);
@@ -37,26 +44,24 @@ const auth = useAuth();
 const user_token = auth.getToken();
 const info = auth.getAuthInfo();
 
-function getPage() {
-  return pages.pages.find((p) => p.name == route.params.page);
-}
-
-const page = computed(() => {
-  if(pages) {
-    const p = getPage();
-    if(p)
-      return p;
-    router.replace('/');
-  }
-});
-
-function edit() {
+async function edit() {
   changes.value = page.value.contents;
   editing.value = true;
 }
 
+async function load() {
+  const result = await fetch(`/api/pages/${route.params.page}`);
+  if(result.ok) {
+    const p = await result.json();
+    page.value = {
+      v: p.v,
+      contents: JSON.parse(p.contents),
+    }
+  }
+}
+
 async function save() {
-  const result = await fetch(`/api/pages/${page.value.name}`, {
+  const result = await fetch(`/api/pages/${route.params.page}/${page.value.v}`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${user_token}`,
@@ -64,13 +69,13 @@ async function save() {
     body: JSON.stringify(changes.value),
   });
   if(result.ok) {
-    getPage().contents = changes.value;
+    page.value.contents = changes.value;
+    page.value.v = (await result.json()).v;
     cancel();
   }
 }
 
 function cancel() {
-  console.log(changes.value);
   changes.value = '';
   editing.value = false;
 }

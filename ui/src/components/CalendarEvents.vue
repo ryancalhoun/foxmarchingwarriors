@@ -28,7 +28,6 @@ onMounted(async () => {
         data: ICAL.parse(e.data),
       }
     });
-    console.log(events.value[0]);
   }
 });
 

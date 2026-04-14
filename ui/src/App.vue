@@ -1,13 +1,13 @@
 <template>
-  <load-pages v-slot="loaded">
-    <nav-bar :pages="loaded.pages"/>
-    <router-view class="content" :pages="loaded.pages"/>
-  </load-pages>
+  <load-layout v-slot="loaded">
+    <nav-bar :layout="loaded.layout"/>
+    <router-view class="content"/>
+  </load-layout>
 </template>
 
 <script setup>
 import NavBar from '@/components/NavBar'
-import LoadPages from '@/components/LoadPages'
+import LoadLayout from '@/components/LoadLayout'
 import './assets/site.css'
 </script>
 

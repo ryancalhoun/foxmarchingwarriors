@@ -93,6 +93,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 img {
   max-width: 100%;
+  margin-top: 30px !important;
 }
 li {
   list-style: inside;

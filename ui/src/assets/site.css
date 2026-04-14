@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand|EB+Garamond');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville');
+
 html, body {
   margin: 0;
   width: 100%;
@@ -8,7 +10,7 @@ html, body {
 }
 
 h1, h2, h3, h4, h5, h5 {
-  font-family: 'EB Garamond', serif;
+  font-family: 'Libre Baskerville', serif;
   padding: 24px 0 6px;
 }
 

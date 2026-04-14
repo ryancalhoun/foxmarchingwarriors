@@ -11,12 +11,15 @@ app.route('/api/authenticate', methods=['POST'])(auth.auth_verify)
 app.route('/api/forgot', methods=['POST'])(auth.send_forgot_email)
 
 import page
+app.route('/api/layout', methods=['GET'])(page.get_layout)
 app.route('/api/pages', methods=['GET'])(page.get_pages)
-app.route('/api/pages/<page>', methods=['POST'])(page.save_page)
+app.route('/api/pages/<page>', methods=['GET'])(page.get_current_contents)
+app.route('/api/pages/<page>/<v0>', methods=['POST'])(page.save_page)
 app.route('/api/uploads/<page>', methods=['POST'])(page.upload)
 
 import event
 app.route('/api/events', methods=['GET'])(event.get_events)
+app.route('/calendar.ics', methods=['GET'])(event.get_calendar_ics)
 
 import user
 app.route('/api/users', methods=['GET'])(user.get_users)

@@ -11,9 +11,8 @@
         <fa :icon="menu ? 'times' : 'bars'"/>
       </a>
     </div>
-    <div class="menu" :class="{ open: menu }">
-
-      <router-link v-for="page in orderedPages" :to="page.name"> {{ page.name }} </router-link>
+    <div class="menu" :class="{ open: menu }" v-if="layout">
+      <router-link v-for="page in layout.pages" :to="page"> {{ page }} </router-link>
 
       <div class="user">
         <router-link v-if="user" :to="{ name: 'user' }">
@@ -35,18 +34,11 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 
-const { pages } = defineProps(['pages']);
-
-const orderedPages = computed(() => {
-  if(pages) {
-    return pages.pages.sort((a,b) => a.order - b.order)
-  }
-  return [];
-});
+const { layout } = defineProps(['layout']);
 
 const menu = ref(false);
 
@@ -85,7 +77,7 @@ a {
 .title img {
   height: 24px;
   position: relative;
-  bottom: -8px;
+  bottom: -6px;
   border-radius: 50%;
 }
 .menu a {
