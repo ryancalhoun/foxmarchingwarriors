@@ -92,7 +92,8 @@ a {
   margin: 0 16px;
   text-transform: capitalize;
   display: block;
-  height: 40px;
+  height: 56px;
+  line-height: 56px;
 }
 
 .menu {
@@ -126,6 +127,8 @@ a {
   }
   .menu a {
     display: inline-block;
+    height: 40px;
+    line-height: 40px;
   }
   .menu .large-width {
     display: none;
