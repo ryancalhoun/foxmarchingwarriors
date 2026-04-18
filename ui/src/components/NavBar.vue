@@ -2,7 +2,7 @@
   <nav>
     <div class="title">
       <router-link to="/" @click="menu = false">
-        <img src="https://storage.googleapis.com/foxmarchingwarriors-static/logo.png"/>
+        <img :src="logoUrl"/>
         <span> foxmarchingwarriors </span>
       </router-link>
     </div>
@@ -39,6 +39,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '@/components/Auth'
 
 const { layout } = defineProps(['layout']);
+
+const logoUrl = ref(process.env.VUE_APP_STATIC_URL + '/logo.png');
 
 const menu = ref(false);
 

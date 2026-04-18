@@ -5,6 +5,7 @@ import router from './router'
 import {
   faBars,
   faCircleXmark,
+  faClipboardList,
   faEdit,
   faExternalLink,
   faFilePdf,
@@ -17,11 +18,19 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
+import {
+  faCalendarDays,
+  faClone,
+} from '@fortawesome/free-regular-svg-icons'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 
 library.add(
   faBars,
+  faCalendarDays,
   faCircleXmark,
+  faClipboardList,
+  faClone,
   faEdit,
   faExternalLink,
   faFilePdf,

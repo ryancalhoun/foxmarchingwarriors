@@ -19,6 +19,7 @@ app.route('/api/uploads/<page>', methods=['POST'])(page.upload)
 
 import event
 app.route('/api/events', methods=['GET'])(event.get_events)
+app.route('/api/events/<from_date>/<to_date>', methods=['GET'])(event.get_events_by_range)
 app.route('/calendar.ics', methods=['GET'])(event.get_calendar_ics)
 
 import user
