@@ -3,6 +3,8 @@ from google.cloud import firestore
 from werkzeug.exceptions import *
 from urllib.request import build_opener
 from icalendar import Calendar
+from icalendar.prop.uri import vUri
+from datetime import datetime, date, time
 import resend
 import logging
 import os
@@ -27,11 +29,13 @@ def hourly():
   events = db.collection('events')
 
   for e in cal.events:
-    events.document(e.uid).set({
-      'start': e.start,
-      'end': e.end,
+    event_props = {
+      'start': type(e.start) == datetime and e.start or datetime.combine(e.start, time(0, 0)),
+      'end': type(e.end) == datetime and e.end or datetime.combine(e.end, time(23, 59)),
       'data': e.to_ical().decode('utf-8'),
-    })
+    }
+
+    events.document(e.uid).set(event_props)
 
   return 'ok'
 

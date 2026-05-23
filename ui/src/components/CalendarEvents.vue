@@ -12,9 +12,12 @@
       <div class="event" v-for="event in upcomingEvents">
         <div class="start">
           {{ event.startDate }} - {{ event.startTime }}
+          <a class="attachment" :href="event.fields.attach" target="_blank" v-if="event.fields.attach">
+            <fa icon="fa-paperclip"/> Attachment
+          </a>
         </div>
         <div class="summary">
-          {{ event.data[1][0][3] }}
+          {{ event.fields.summary }}
         </div>
       </div>
     </div>
@@ -24,7 +27,10 @@
         <div class="date"> {{ day.date }} </div>
         <div class="event" v-for="event in eventListForDate(day.month, day.date)">
           {{ event.startTime }}
-          {{ event.data[1][0][3] }}
+          {{ event.fields.summary }}
+          <a class="attachment" :href="event.fields.attach" target="_blank">
+            <fa icon="fa-paperclip" v-if="event.fields.attach"/>
+          </a>
         </div>
       </div> 
     </div>
@@ -52,7 +58,7 @@ import { useAuth } from '@/components/Auth'
 const auth = useAuth();
 const user = ref(auth.getAuthInfo());
 
-const listView = ref(false);
+const listView = ref(true);
 const upcomingEvents = ref([]);
 const monthEvents = ref({});
 
@@ -87,12 +93,15 @@ function currentMonthDays(start) {
       day['date'] = n.getDate() - (w-i);
       day['month'] = n.getMonth() + 1;
 
+      if(n.getMonth() == today.getMonth() && n.getDate() - (w-i) == today.getDate()) {
+        day['today'] = true;
+      }
     } else if (i <= last + w) {
       day['month'] = d.getMonth() + 1;
       day['date'] = i - w;
       day['current'] = true;
 
-      if(start.getMonth() == today.getMonth() && (i - w) == today.getDate()) {
+      if(d.getMonth() == today.getMonth() && (i - w) == today.getDate()) {
         day['today'] = true;
       }
     } else {
@@ -124,8 +133,6 @@ startDate.setDate(1);
 days.value = currentMonthDays(startDate);
 month.value = currentMonthName(startDate);
 if(days.value.findIndex((d) => d.date == new Date().getDate()) / 7 >= 4) {
-  console.log("Week five");
-
   startDate.setMonth(startDate.getMonth() + 1);
   days.value = currentMonthDays(startDate);
   month.value = currentMonthName(startDate);
@@ -140,19 +147,24 @@ onMounted(async () => {
     (await response.json()).events.forEach((e) => {
       const d = new Date(e.start);
 
+      const data = ICAL.parse(e.data);
+      const fields = data[1].reduce((h, v, i) => {
+        h[v[0]] = v[3];
+        return h;
+      }, {});
+
       const info = {
         startDate: d.toDateString(),
         startTime: d.toLocaleTimeString(),
-        data: ICAL.parse(e.data),
+        fields: fields,
       };
+
 
       if(upcomingEvents.value.length < 5 && d > today) {
         upcomingEvents.value.push(info);
       }
 
-      if(d.getMonth() == new Date().getMonth()) {
-        (monthEvents.value[(d.getMonth() + 1) + "-" + d.getDate()] ||= []).push(info);
-      }
+      (monthEvents.value[(d.getMonth() + 1) + "-" + d.getDate()] ||= []).push(info);
     });
   }
 });
@@ -226,6 +238,15 @@ onMounted(async () => {
   background: grey;
   color: white;
   border-radius: 8px;
+  position: relative;
+}
+
+.event .attachment {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+  padding: 8px 0 16px 0;
 }
 
 .day.past .event {
@@ -236,6 +257,7 @@ onMounted(async () => {
   font-size: 12px;
   padding: 2px 4px;
   margin: 1px 2px;
+  max-height: 90px;
 }
 
 .list .event {
@@ -271,6 +293,10 @@ onMounted(async () => {
     display: inline-block;
     margin-left: 32px;
     font-size: 16px;
+  }
+  .list .event .attachment {
+    display: inline;
+    float: right;
   }
 }
 </style>
