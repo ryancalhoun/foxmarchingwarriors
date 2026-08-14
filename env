@@ -1,6 +1,7 @@
 PROJECT=foxmarchingwarriors
+PROJECT_NUMBER=377984045382
 REGION=us-central1
-GCP_SERVICE_ACCOUNT=377984045382-compute@developer.gserviceaccount.com
+GCP_SERVICE_ACCOUNT=$PROJECT_NUMBER-compute@developer.gserviceaccount.com
 
 BUCKET=$PROJECT-static
 
@@ -10,5 +11,7 @@ TIME=$(date +%Y%m%d-%H%M%S)
 APP_NAME=foxmarchingwarriors
 JOB_NAME=background-jobs
 QUEUE_NAME=queue
+SCHEDULE_NAME=periodic
 
+JOB_URL=https://$JOB_NAME-$PROJECT_NUMBER.$REGION.run.app
 CALENDAR=https://calendar.google.com/calendar/ical/670fd9e51d455ae9fa4b5b8e8818a90582e4ed93e47e46396aa66473073729e5%40group.calendar.google.com/public/basic.ics

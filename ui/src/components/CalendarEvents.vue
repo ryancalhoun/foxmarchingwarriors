@@ -139,7 +139,7 @@ if(days.value.findIndex((d) => d.date == new Date().getDate()) / 7 >= 4) {
 }
 
 onMounted(async () => {
-  const response = await fetch('/api/events/2026-04-01/2026-08-01');
+  const response = await fetch('/api/events/2026-04-01/2026-12-31');
   const today = new Date();
   today.setHours(23);
   today.setMinutes(59);
@@ -257,7 +257,7 @@ onMounted(async () => {
   font-size: 12px;
   padding: 2px 4px;
   margin: 1px 2px;
-  max-height: 90px;
+  height: 36px;
 }
 
 .list .event {

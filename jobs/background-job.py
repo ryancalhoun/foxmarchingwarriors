@@ -12,7 +12,7 @@ import os
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 
-@app.route('/hourly', methods=['POST'])
+@app.route('/refresh-calendar', methods=['POST'])
 def hourly():
   url = os.getenv('CALENDAR')
 

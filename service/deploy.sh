@@ -8,19 +8,12 @@ cd $(dirname $0)
 docker build . -t $REPO/service:$TIME
 docker push $REPO/service:$TIME
 
-background_service_url=$(
-  gcloud run services describe $JOB_NAME \
-    --project=$PROJECT \
-    --region=$REGION \
-    --format=json | jq -r .status.url
-)
-
 env=$(cat <<EOF
 PROJECT: $PROJECT
 REGION: $REGION
 BUCKET: $BUCKET
 QUEUE: $QUEUE_NAME
-SEND_URL: $background_service_url/send-email
+SEND_URL: $JOB_URL/send-email
 INDEX: |
   $(cat ../ui/dist/index.html)
 EOF

@@ -15,6 +15,27 @@ CALENDAR: $CALENDAR
 EOF
 )
 
+verb=create
+if gcloud scheduler jobs list \
+  --project=$PROJECT \
+  --location=$REGION \
+  --filter=name:$SCHEDULE_NAME \
+  --format="value(name)" | grep -q $SCHEDULE_NAME; then
+
+  verb=update
+fi
+
+gcloud scheduler jobs $verb http $SCHEDULE_NAME \
+  --project=$PROJECT \
+  --location=$REGION \
+  --http-method=POST \
+  --schedule="*/30 * * * *" \
+  --oidc-service-account-email=$GCP_SERVICE_ACCOUNT \
+  --oidc-token-audience=$JOB_URL/refresh-calendar \
+  --uri=$JOB_URL/refresh-calendar \
+  --time-zone=America/Chicago
+
+
 gcloud tasks queues update $QUEUE_NAME \
   --project=$PROJECT \
   --location=$REGION \
@@ -27,6 +48,7 @@ gcloud tasks queues update $QUEUE_NAME \
   --max-concurrent-dispatches=1 \
   --http-oidc-service-account-email-override=$GCP_SERVICE_ACCOUNT
 
+
 gcloud run deploy $JOB_NAME \
   --project=$PROJECT \
   --region=$REGION \
@@ -35,4 +57,4 @@ gcloud run deploy $JOB_NAME \
   --timeout=30 \
   --no-allow-unauthenticated \
   --env-vars-file=<(echo "$env") \
-  --set-secrets=RESEND_API_KEY=resend-api-key:latest
+  --set-secrets=RESEND_API_KEY=resend-api-key:latest \
